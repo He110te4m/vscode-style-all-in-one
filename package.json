@@ -1,0 +1,70 @@
+{
+    "name": "style-all-in-one",
+    "description": "",
+    "author": "He110",
+    "license": "MIT",
+    "version": "0.1.6",
+    "repository": {
+        "type": "git",
+        "url": "http://code.sangfor.org/20216/vscode-style-all-in-one"
+    },
+    "publisher": "He110",
+    "categories": [],
+    "keywords": [],
+    "engines": {
+        "vscode": "^1.43.0"
+    },
+    "activationEvents": [
+        "*"
+    ],
+    "main": "./client/out/extension",
+    "contributes": {
+        "configuration": {
+            "type": "object",
+            "properties": {
+                "style-all-in-one.global-style": {
+                    "type": "array",
+                    "default": [],
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "全局样式表"
+                },
+                "style-all-in-one.path-aliases": {
+                    "type": "object",
+                    "default": {
+                        "@": "src"
+                    },
+                    "description": "路径别名"
+                }
+            }
+        }
+    },
+    "scripts": {
+        "package": "yarn compile && npx vsce package --baseContentUrl https://none --baseImagesUrl https://none && mv *.vsix release/",
+        "vscode:prepublish": "cd client && yarn && cd .. && npm run compile",
+        "compile": "tsc -b",
+        "watch": "tsc -b -w",
+        "clean": "yarn clean:dep && yarn clean:build",
+        "clean:dep": "rm -rf node_modules client/node_modules server/node_modules",
+        "clean:build": "rm -rf out client/out server/out",
+        "lint": "eslint ./client/src ./server/src --ext .ts,.tsx",
+        "postinstall": "cd client && yarn && cd ../server && yarn && cd .."
+    },
+    "devDependencies": {
+        "@types/lodash": "^4.14.175",
+        "@types/mocha": "^5.2.7",
+        "@types/node": "^12.12.0",
+        "@typescript-eslint/eslint-plugin": "^4.16.0",
+        "@typescript-eslint/parser": "^4.16.0",
+        "eslint": "^7.21.0",
+        "typescript": "^4.4.3"
+    },
+    "dependencies": {
+        "less-symbols-parser": "^2.1.2",
+        "lodash": "^4.17.21",
+        "postcss": "^8.3.9",
+        "scss-symbols-parser": "^2.0.1",
+        "vscode-uri": "^3.0.2"
+    }
+}
