@@ -1,5 +1,5 @@
 {
-    "name": "lsp-sample-server",
+    "name": "server",
     "description": "Example implementation of a language server in node.",
     "version": "1.0.0",
     "author": "Microsoft Corporation",
@@ -9,7 +9,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/Microsoft/vscode-extension-samples"
+        "url": "https://github.com/He110te4m/vscode-style-all-in-one"
     },
     "dependencies": {
         "vscode-css-languageservice": "^5.1.7",

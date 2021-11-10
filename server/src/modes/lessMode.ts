@@ -55,13 +55,15 @@ export function getLESSMode(
                 : [];
 
             const varPrefixIdx = prefix.lastIndexOf(variablePrefix);
+            const colorPrefixIdx = prefix.lastIndexOf('#');
+            const idx = Math.max(varPrefixIdx, colorPrefixIdx);
 
-            if (varPrefixIdx < 0) {
+            if (idx < 0) {
                 return completionList;
             }
 
             const range = Range.create(
-                Position.create(position.line, varPrefixIdx),
+                Position.create(position.line, idx),
                 position
             );
 

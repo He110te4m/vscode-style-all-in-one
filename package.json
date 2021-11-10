@@ -3,10 +3,10 @@
     "description": "",
     "author": "He110",
     "license": "MIT",
-    "version": "0.1.6",
+    "version": "0.1.7",
     "repository": {
         "type": "git",
-        "url": "http://code.sangfor.org/20216/vscode-style-all-in-one"
+        "url": "https://github.com/He110te4m/vscode-style-all-in-one"
     },
     "publisher": "He110",
     "categories": [],

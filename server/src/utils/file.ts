@@ -9,6 +9,11 @@ export function getRealPath(path: string, base = getRootDir()) {
         return path;
     }
 
+    // 兼容低版本 less-loader
+    if (path.startsWith('~')) {
+        path = path.slice(1);
+    }
+
     const baseDir = statSync(base).isDirectory() ? base : dirname(base);
 
     const aliasPath = parserPathByAliases(path, getAliases());

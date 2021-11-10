@@ -84,5 +84,5 @@ export function getVarsCompletionList(
 
 /** 生成变量前缀的校验正则 */
 export function getVariableRegExp(prefix: string, suffix = '') {
-    return new RegExp(`${prefix}[a-z-_]*${suffix + '?'}$`, 'i');
+    return new RegExp(`${prefix}|#[a-z-_]*${suffix + '?'}$`, 'i');
 }
