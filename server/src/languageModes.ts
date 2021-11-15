@@ -26,25 +26,14 @@ export interface LanguageMode {
     dispose(): void;
 }
 
-export interface LanguageModes {
-    getModeAtPosition(
-        document: TextDocument,
-        position: Position
-    ): LanguageMode | undefined;
-    getModesInRange(document: TextDocument, range: Range): LanguageModeRange[];
-    getAllModes(): LanguageMode[];
-    getAllModesInDocument(document: TextDocument): LanguageMode[];
-    getMode(languageID: StyleType): LanguageMode | undefined;
-    onDocumentRemoved(document: TextDocument): void;
-    dispose(): void;
-}
+export type LanguageModes = ReturnType<typeof getLanguageModes>;
 
 export interface LanguageModeRange extends Range {
     mode: LanguageMode | undefined;
     attributeValue?: boolean;
 }
 
-export function getLanguageModes(): LanguageModes {
+export function getLanguageModes() {
     const htmlLanguageService = LangServerMap.html;
     const cssLanguageService = LangServerMap[StyleType.css];
     const lessLanguageService = LangServerMap[StyleType.less];
@@ -77,6 +66,9 @@ export function getLanguageModes(): LanguageModes {
                 return modes[languageID];
             }
             return undefined;
+        },
+        getLanguageRegion(document: TextDocument): HTMLDocumentRegions {
+            return documentRegions.get(document);
         },
         getModesInRange(
             document: TextDocument,
@@ -125,7 +117,7 @@ export function getLanguageModes(): LanguageModes {
                 modes[mode as StyleType]?.onDocumentRemoved(document);
             }
         },
-        dispose(): void {
+        dispose() {
             modelCaches.forEach((mc) => mc.dispose());
             modelCaches = [];
             for (const mode in modes) {

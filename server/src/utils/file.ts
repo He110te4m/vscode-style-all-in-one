@@ -1,5 +1,6 @@
 import { existsSync, readdirSync, statSync } from 'fs';
 import { dirname, extname, isAbsolute, join } from 'path';
+import { EXT_MAP, StyleType } from '../const';
 import { getAliases, getRootDir } from './config';
 
 const EXCLUDE_FILES = ['.', '..'];
@@ -19,11 +20,7 @@ export function getRealPath(path: string, base = getRootDir()) {
     const aliasPath = parserPathByAliases(path, getAliases());
     const npmPath = parserPackagePath(path);
     const realPath = join(baseDir, path);
-    const absPath = checkPath(aliasPath)
-        ? aliasPath
-        : checkPath(npmPath)
-        ? npmPath
-        : realPath;
+    const absPath = checkPath(aliasPath) ? aliasPath : checkPath(npmPath) ? npmPath : realPath;
 
     return absPath;
 }
@@ -34,9 +31,7 @@ function checkPath(path: string) {
 
 function parserPathByAliases(path: string, aliases: Record<string, string>) {
     let absPath = path;
-    const matchAliases = Object.keys(aliases).filter((alias) =>
-        path.startsWith(alias)
-    );
+    const matchAliases = Object.keys(aliases).filter(alias => path.startsWith(alias));
     if (matchAliases.length) {
         const [alias] = matchAliases;
         const newPath = join(aliases[alias], path.substr(alias.length));
@@ -62,7 +57,7 @@ export function getAllFile(dir: string, extList?: string[]) {
     let fileNameList: string[] = [];
 
     // 遍历读取到的文件列表
-    files.forEach((filename) => {
+    files.forEach(filename => {
         if (EXCLUDE_FILES.includes(filename)) {
             return;
         }
@@ -82,4 +77,10 @@ export function getAllFile(dir: string, extList?: string[]) {
     });
 
     return fileNameList;
+}
+
+export function getFileStyleType(path: string) {
+    const ext = extname(path).slice(1);
+
+    return EXT_MAP[ext] ?? StyleType.css;
 }

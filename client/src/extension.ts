@@ -7,11 +7,11 @@ import {
     ServerOptions,
     TransportKind,
 } from 'vscode-languageclient';
+import { registerColorProvider } from './color';
 import { getWorkspaceFolder } from './config';
+import { SUPPORT_FILES } from './const';
 
 let client: LanguageClient;
-
-const supportFiles = ['css', 'less', 'sass', 'scss', 'pcss'];
 
 export function activate(context: ExtensionContext) {
     /** 取 server 代码入口 */
@@ -43,7 +43,7 @@ export function activate(context: ExtensionContext) {
     const clientOptions: LanguageClientOptions = {
         /** 注册支持的语言类型 */
         documentSelector: [{ scheme: 'file', language: 'vue' }].concat(
-            supportFiles.map((suffix) => ({
+            SUPPORT_FILES.map((suffix) => ({
                 scheme: 'file',
                 language: suffix,
             }))
@@ -53,7 +53,7 @@ export function activate(context: ExtensionContext) {
         },
         synchronize: {
             configurationSection: 'style-all-in-one',
-            fileEvents: supportFiles.map((suffix) =>
+            fileEvents: SUPPORT_FILES.map((suffix) =>
                 workspace.createFileSystemWatcher(`**/*.${suffix}`)
             ),
         },
@@ -66,6 +66,10 @@ export function activate(context: ExtensionContext) {
         serverOptions,
         clientOptions
     );
+
+    client.onReady().then(() => {
+        registerColorProvider(client);
+    });
 
     // 启动 client
     client.start();

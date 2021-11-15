@@ -1,6 +1,5 @@
-import { extname } from 'path';
-import { EXT_MAP, StyleType } from '../../const';
-import { getRealPath } from '../../utils/file';
+import { StyleType } from '../../const';
+import { getRealPath, getFileStyleType } from '../../utils/file';
 import { CssStore, parserCss } from './css';
 import { LessStore, parserLess } from './less';
 import { ScssStore, parserScss } from './scss';
@@ -138,10 +137,4 @@ function getSymbolByType(path: string, type: StyleType, isFile = true) {
     }
 
     return symbol;
-}
-
-function getFileStyleType(path: string) {
-    const ext = extname(path).slice(1);
-
-    return EXT_MAP[ext] ?? StyleType.css;
 }

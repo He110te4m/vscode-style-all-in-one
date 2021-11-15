@@ -15,7 +15,7 @@ const config: Config = {
     rootDir: '',
 };
 
-const allowExtNames = ['.less', '.css', '.pcss', '.scss', '.sass'];
+const allowExtNames = ['.less', '.css', '.pcss', '.postcss', '.scss', '.sass'];
 
 export function setGlobalStylePath(paths: string[]) {
     config.globalStyle = paths.reduce((list, path) => {

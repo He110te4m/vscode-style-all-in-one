@@ -22,6 +22,7 @@ export const LangServerMap = {
 export const EXT_MAP: Record<string, Exclude<StyleType, StyleType.html>> = {
     css: StyleType.css,
     pcss: StyleType.css,
+    postcss: StyleType.css,
     less: StyleType.less,
     sass: StyleType.scss,
     scss: StyleType.scss,

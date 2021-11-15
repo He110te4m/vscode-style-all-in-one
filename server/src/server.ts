@@ -21,6 +21,7 @@ import { URI } from 'vscode-uri';
 import { EXT_MAP, LangServerMap } from './const';
 import { getDefinition } from './services/definition';
 import { getHover } from './services/hover';
+import { parserColorMap } from './services/color';
 
 // 创建 IPC 连接池
 const connection = createConnection(
@@ -196,6 +197,15 @@ connection.onHover((textDocumentPosition) => {
     }
 
     return getHover(document, textDocumentPosition.position);
+});
+
+/** 处理颜色解析事件 */
+connection.onRequest('parser-color-map', async ({ path }: { path: string }) => {
+    const colorMap = await parserColorMap(path);
+    connection.sendRequest('show-color-blocks', {
+        uri: path,
+        colorMap
+    });
 });
 
 // document manager 监听连接池中 client 的 document 变化
