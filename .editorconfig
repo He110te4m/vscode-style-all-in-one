@@ -15,7 +15,8 @@ charset = utf-8
 end_of_line = lf
 
 ## 统一缩进宽度
-indent_size = 4
+tab_width = 2
+indent_size = 2
 
 ## 统一缩进字符为空格(tab or space)
 indent_style = space

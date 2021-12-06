@@ -3,12 +3,12 @@
     "description": "",
     "author": "He110",
     "license": "MIT",
-    "version": "0.1.7",
+    "version": "0.2.0",
     "repository": {
         "type": "git",
         "url": "https://github.com/He110te4m/vscode-style-all-in-one"
     },
-    "publisher": "He110",
+    "publisher": "he110te4m",
     "categories": [],
     "keywords": [],
     "engines": {
@@ -17,7 +17,7 @@
     "activationEvents": [
         "*"
     ],
-    "main": "./client/out/extension",
+    "main": "./client/out/main",
     "contributes": {
         "configuration": {
             "type": "object",
