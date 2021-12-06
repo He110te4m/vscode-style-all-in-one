@@ -314,6 +314,11 @@ cross-spawn@^7.0.2:
     shebang-command "^2.0.0"
     which "^2.0.1"
 
+css-color-checker@^1.6.1:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/css-color-checker/-/css-color-checker-1.6.1.tgz#435e6909fbbe5b99235904eba2e38009a6b63021"
+  integrity sha512-OTnqh8JNS2csS/A6cXntTVQUJwc9Y51Be8i7cKCrjE0kOyJFYiybDUgNmXJQVbfszf4gzu8cRU74a0PUVN+Emw==
+
 debug@^4.0.1, debug@^4.1.1, debug@^4.3.1:
   version "4.3.2"
   resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.2.tgz#f0a49c18ac8779e31d4a0c6029dfb76873c7428b"

@@ -2,7 +2,7 @@
     "name": "server",
     "description": "Example implementation of a language server in node.",
     "version": "1.0.0",
-    "author": "Microsoft Corporation",
+    "author": "He110te4m",
     "license": "MIT",
     "engines": {
         "node": "*"

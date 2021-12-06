@@ -1,76 +1,52 @@
 import { readFileSync } from 'fs';
 import { extname } from 'path';
+import { Position } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { EXT_MAP, StyleType } from '../const';
-import { getLanguageModes, LanguageModes } from '../languageModes';
-import { getGlobalStylePath } from '../utils/config';
-import { getFileStyleType } from '../utils/file';
-import { parserStyle, parserStyleByContent, StyleSymbol } from './parser';
+import { getGlobalSymbols } from '../config';
+import { EXT_MAP } from '../const';
+import { getFileSymbols } from '../helpers/parse';
+import { languageModel } from '../language/cache';
+import { StyleSymbol } from '../parser';
 
-export async function parserColorMap(path: string) {
-    const type = extname(path).slice(1);
-    const id = getFileStyleType(path);
-    const globalColorMap = parserGlobalColorMap();
+export function getColorMap(path: string) {
+  const globalSymbolMap = getGlobalSymbols();
+  const fileSymbolsMap: Record<string, StyleSymbol> = {};
 
-    if (Object.keys(EXT_MAP).includes(type) || id !== StyleType.css || type === 'vue') {
-        let businessColorMap: Record<string, string> = {};
-        if (type === 'vue') {
-            businessColorMap = parserColorMapByVue(path);
-        } else {
-            businessColorMap = parserColorMapByFile(path);
-        }
+  const ext = extname(path).slice(1);
+  const pos = Position.create(0, 0);
 
-        return {
-            ...globalColorMap,
-            ...businessColorMap
-        };
-    }
-}
-
-function parserColorMapBySymbols(symbols: Record<string, StyleSymbol>) {
-    const colorMap: Record<string, string> = {};
-    Object.values(symbols).forEach(symbol => {
-        if (!symbol?.variables.length) {
-            return;
-        }
-        symbol.variables.forEach(({ name, value }) => {
-            colorMap[name] = value;
-        });
+  if (ext === 'vue') {
+    const regions = languageModel.get(
+      TextDocument.create(path, 'vue', 1, String(readFileSync(path)))
+    );
+    const types = regions.getLanguagesInDocument();
+    types.forEach((type) => {
+      const doc = regions.getEmbeddedDocument(type);
+      Object.assign(fileSymbolsMap, getFileSymbols(doc, pos));
     });
+  } else if (Object.keys(EXT_MAP).includes(ext)) {
+    Object.assign(
+      fileSymbolsMap,
+      getFileSymbols(
+        TextDocument.create(path, EXT_MAP[ext], 1, String(readFileSync(path))),
+        pos
+      )
+    );
+  }
 
-    return colorMap;
+  return parseColorMapBySymbols({ ...fileSymbolsMap, ...globalSymbolMap });
 }
 
-function parserGlobalColorMap() {
-    const symbols = parserStyle(getGlobalStylePath());
-
-    return parserColorMapBySymbols(symbols);
-}
-
-function parserColorMapByFile(path: string) {
-    const symbols = parserStyle([path]);
-
-    return parserColorMapBySymbols(symbols);
-}
-
-let languageModes: LanguageModes | null = null;
-
-function parserColorMapByVue(path: string) {
-    if (!languageModes) {
-        languageModes = getLanguageModes();
+function parseColorMapBySymbols(symbols: Record<string, StyleSymbol>) {
+  const colorMap: Record<string, string> = {};
+  Object.values(symbols).forEach((symbol) => {
+    if (!symbol?.variables.length) {
+      return;
     }
-
-    const document = TextDocument.create(path, 'vue', 1, String(readFileSync(path)));
-    const regions = languageModes.getLanguageRegion(document);
-
-    const symbols: Record<string, StyleSymbol> = {};
-    regions.getLanguagesInDocument().forEach(type => {
-        if (type === StyleType.html) {
-            return;
-        }
-        const doc = regions.getEmbeddedDocument(type);
-        Object.assign(symbols, parserStyleByContent(doc.getText(), path, type));
+    symbol.variables.forEach(({ name, value }) => {
+      colorMap[name] = value;
     });
+  });
 
-    return parserColorMapBySymbols(symbols);
+  return colorMap;
 }
