@@ -27,15 +27,15 @@
 
 - Variable index
 
-![](./resources/demo/variable_index.gif)
+![](https://github.com/He110te4m/vscode-style-all-in-one/raw/main/resources/demo/variable_index.gif)
 
 - Provide an easier way for CSS variable substitution
 
-![](./resources/demo/variable_replace.gif)
+![](https://github.com/He110te4m/vscode-style-all-in-one/raw/main/resources/demo/variable_replace.gif)
 
 - Go to CSS variable's definition
 
-![](./resources/demo/go_definition.gif)
+![](https://github.com/He110te4m/vscode-style-all-in-one/raw/main/resources/demo/go_definition.gif)
 
 ## Configuration
 
