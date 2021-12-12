@@ -8,7 +8,7 @@ export function useClient(rootPath: string) {
   const serverModule = resolve(rootPath, 'server/out/main.js');
 
   /** debugger config */
-  const debugOptions = { execArgv: ['--nolazy', '--inspect=4397'] };
+  const debugOptions = { execArgv: ['--nolazy', '--inspect=48390'] };
 
   /** server common config */
   const serverConfig = {

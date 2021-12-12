@@ -61,9 +61,13 @@ function getCodeLensBySymbol(
   pos: Position,
   globalSymbol: StyleSymbol[]
 ) {
-  const content = doc.getText();
+  const docPath = URI.parse(doc.uri).fsPath ?? doc.uri;
+  if (!docPath) {
+    return [];
+  }
 
-  const fileSymbol = Object.values(getFileSymbols(doc, pos) ?? {});
+  const content = doc.getText();
+  const fileSymbol = Object.values(getFileSymbols(content, docPath) ?? {});
 
   const symbols = globalSymbol.concat(fileSymbol);
 
@@ -124,7 +128,7 @@ function getVariableCodeLens(
     list.push({
       range,
       command: {
-        title: `use style variable name ( ${variable.name} ) ${isValue ? '☐' : '☑'
+        title: `use style variable ( ${variable.name} ) ${isValue ? '☐' : '☑'
           }`,
         command: isValue ? commands.convertToName : commands.convertToValue,
         arguments: [variable, range],

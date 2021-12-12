@@ -1,21 +1,16 @@
 {
-    "compilerOptions": {
-        "module": "commonjs",
-        "target": "es2019",
-        "lib": ["ES2019", ],
-        "outDir": "out",
-        "rootDir": "src",
-        "sourceMap": true
-    },
-    "include": [
-        "src"
-    ],
-    "exclude": [
-        "node_modules",
-        ".vscode-test"
-    ],
-    "references": [
-        { "path": "./client" },
-        { "path": "./server" }
-    ]
+  "compilerOptions": {
+    "forceConsistentCasingInFileNames": true,
+    "module": "commonjs",
+    "target": "es2019",
+    "importHelpers": true,
+    "lib": ["ES2019", "ES2020"],
+    "strict": true,
+    "outDir": "out",
+    "rootDir": "src",
+    "sourceMap": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", ".vscode-test"],
+  "references": [{ "path": "./client" }, { "path": "./server" }]
 }

@@ -4,6 +4,7 @@ import { TextDocument } from 'vscode-languageserver-textdocument';
 import { URI } from 'vscode-uri';
 import { getGlobalSymbols } from '../config';
 import { EXT_MAP, StyleType } from '../const';
+import { getFileStyleType } from '../helpers/file';
 import { findVarName, getFileSymbols } from '../helpers/parse';
 import { languageModel } from '../language/cache';
 import { StyleSymbol } from '../parser';
@@ -14,43 +15,23 @@ export function getDefinition(doc: TextDocument, pos: Position) {
     return null;
   }
 
-  const id = doc.languageId.toLowerCase();
-  if (id === 'vue') {
-    const regions = languageModel.get(doc);
-    const type = regions.getLanguageAtPosition(pos);
-    if (!type) {
-      return null;
-    }
-    const styleDoc = regions.getEmbeddedDocument(type);
+  const type = getFileStyleType(docPath);
 
-    return findDefinition(styleDoc, pos, type);
-  } else if (Object.keys(EXT_MAP).includes(id)) {
-    const type = EXT_MAP[id];
-
-    return findDefinition(doc, pos, type);
-  }
-
-  return null;
-}
-
-function findDefinition(doc: TextDocument, pos: Position, type: StyleType) {
   const varName = findVarName(doc, pos, type);
-
   if (!varName) {
     return null;
   }
 
-  const fileSymbolsMap = getFileSymbols(doc, pos) || {};
+  const fileSymbolsMap = getFileSymbols(doc.getText(), docPath);
   const globalSymbolMap = getGlobalSymbols();
   return (
-    getDefinitionLocation(fileSymbolsMap, type, varName) ||
-    getDefinitionLocation(globalSymbolMap, type, varName)
+    getDefinitionLocation(fileSymbolsMap, varName) ||
+    getDefinitionLocation(globalSymbolMap, varName)
   );
 }
 
 function getDefinitionLocation(
   symbolMap: Record<string, StyleSymbol>,
-  type: StyleType,
   varName: string
 ) {
   let loc: Location | null = null;
@@ -66,7 +47,7 @@ function getDefinitionLocation(
     }
 
     const filePath = URI.file(uri).toString();
-    const doc = TextDocument.create(uri, type, 1, readFileSync(uri).toString());
+    const doc = TextDocument.create(uri, StyleType.css, 1, readFileSync(uri).toString());
 
     const pos = doc.positionAt(v.offset);
     loc = Location.create(filePath, Range.create(pos, pos));

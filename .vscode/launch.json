@@ -18,7 +18,7 @@
             "type": "node",
             "request": "attach",
             "name": "Attach to Server",
-            "port": 4397,
+            "port": 48390,
             "restart": true,
             "outFiles": ["${workspaceRoot}/server/out/**/*.js"]
         }

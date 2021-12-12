@@ -3,7 +3,7 @@
     "description": "",
     "author": "He110",
     "license": "MIT",
-    "version": "0.2.0",
+    "version": "1.0.0",
     "repository": {
         "type": "git",
         "url": "https://github.com/He110te4m/vscode-style-all-in-one"
@@ -42,7 +42,7 @@
     },
     "scripts": {
         "css-color-checker": "^1.6.1",
-        "package": "yarn compile && vsce package --baseContentUrl https://none --baseImagesUrl https://none && mv *.vsix release/",
+        "package": "yarn compile && vsce package && mv *.vsix release/",
         "vscode:prepublish": "cd client && yarn && cd .. && npm run compile",
         "compile": "tsc -b",
         "watch": "tsc -b -w",

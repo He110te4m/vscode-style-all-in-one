@@ -25,8 +25,7 @@ export function useColorService() {
 
 /** Check if the color needs to be updated */
 function checkUpdateColor() {
-    const { activeTextEditor } = window;
-    const doc = activeTextEditor?.document;
+    const doc = window.activeTextEditor?.document;
     if (!doc) {
         return false;
     }

@@ -1,6 +1,10 @@
 import { readFileSync } from 'fs';
-import { StyleType } from '../const';
+import { isArray, mergeWith } from 'lodash';
+import { extname } from 'path';
+import { TextDocument } from 'vscode-languageserver-textdocument';
+import { EXT_MAP, StyleType } from '../const';
 import { getRealPath, getFileStyleType } from '../helpers/file';
+import { languageModel } from '../language/cache';
 import { CssStore, parserCss } from './languages/css';
 import { LessStore, parserLess } from './languages/less';
 import { ScssStore, parserScss } from './languages/scss';
@@ -57,7 +61,7 @@ export function parseStyle(
         return obj;
       }
 
-      symbol = parseStyleByContent(content, absPath, type);
+      symbol = parseStyleByContent(content, absPath);
     }
 
     store[type][absPath] = symbol;
@@ -83,28 +87,55 @@ export function parseStyle(
   }, {} as Record<string, StyleSymbol>);
 }
 
-export function parseStyleByContent(content: string, path: string, type: StyleType) {
+export function parseStyleByContent(content: string, path: string) {
   let symbol: StyleSymbol = {
     variables: [],
     imports: [],
   };
 
-  switch (type) {
-    case StyleType.css:
-      symbol = parserCss(content, path);
-      break;
+  const contentList: [string, StyleType][] = [];
 
-    case StyleType.less:
-      symbol = parserLess(content, path);
-      break;
-
-    case StyleType.scss:
-      symbol = parserScss(content, path);
-      break;
-
-    default:
-      break;
+  const ext = extname(path).slice(1);
+  if (ext === 'vue') {
+    const regions = languageModel.get(
+      TextDocument.create(path, 'vue', 1, String(readFileSync(path)))
+    );
+    const types = regions.getLanguagesInDocument();
+    types.forEach(type => {
+      contentList.push([regions.getEmbeddedDocument(type).getText(), type]);
+    });
+  } else if (Object.keys(EXT_MAP).includes(ext)) {
+    contentList.push([content, EXT_MAP[ext]]);
   }
+
+  contentList.forEach(([content, type]) => {
+    let data: StyleSymbol = {
+      variables: [],
+      imports: [],
+    };
+    switch (type) {
+      case StyleType.css:
+        data = parserCss(content, path);
+        break;
+
+      case StyleType.less:
+        data = parserLess(content, path);
+        break;
+
+      case StyleType.scss:
+        data = parserScss(content, path);
+        break;
+
+      default:
+        break;
+    }
+
+    symbol = mergeWith(symbol, data, (objValue, srcValue) => {
+      if (isArray(objValue)) {
+        return objValue.concat(srcValue);
+      }
+    });
+  });
 
   return symbol;
 }

@@ -15,4 +15,4 @@ client/node_modules/**
 !client/node_modules/semver/**
 TODO
 .gitlab/**
-resource/**
+*.log

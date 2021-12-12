@@ -1,4 +1,4 @@
-import { throttle } from 'lodash';
+import { debounce } from 'lodash';
 import { ExtensionContext, window, workspace } from 'vscode';
 import { useClient } from './client';
 import { registerCodeLensCommand } from './services/codeLens';
@@ -19,7 +19,7 @@ export function activate(context: ExtensionContext) {
 
     client.onRequest('show-color-blocks', updateColor);
 
-    const checkFn = throttle(() => {
+    const checkFn = debounce(() => {
       const path = checkUpdate();
       if (path !== false) {
         client.sendRequest('parser-color-map', {

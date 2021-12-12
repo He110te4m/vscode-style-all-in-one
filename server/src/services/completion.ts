@@ -63,6 +63,11 @@ function getComplete(doc: TextDocument, pos: Position, type: StyleType) {
 
   let list: CompletionItem[] = [];
 
+  const docPath = URI.parse(doc.uri).fsPath ?? doc.uri;
+  if (!docPath) {
+    return list;
+  }
+
   const text = doc.getText();
   const offset = doc.offsetAt(pos);
   const prefix = getTextBeforeOffset(text, offset);
@@ -77,7 +82,7 @@ function getComplete(doc: TextDocument, pos: Position, type: StyleType) {
   }
 
   const globalSymbol = Object.values(getGlobalSymbols());
-  const fileSymbol = Object.values(getFileSymbols(doc, pos) ?? {});
+  const fileSymbol = Object.values(getFileSymbols(text, docPath) ?? {});
 
   list = list.concat(
     getVarsCompletionList(globalSymbol, range, checkVar, renderName),
@@ -98,7 +103,7 @@ function getCompletionOptions(
     [StyleType.css]: {
       checkPrefix: (prefix) =>
         getVariableRegExp('(var\\()?--?', '\\)').test(prefix),
-      checkVar: label => /var\(--[^@$]/.test(label),
+      checkVar: (label) => /var\(--[^@$]/.test(label),
       renderName: (name) => `var(${name})`,
       getRange: (prefix, suffix) => {
         let range: Range | null = null;

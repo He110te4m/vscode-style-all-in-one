@@ -1,7 +1,9 @@
-import { existsSync, readdirSync, statSync } from 'fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'fs';
 import { join, extname, isAbsolute, dirname } from 'path';
 import { EXT_MAP, StyleType } from '../const';
 import { getAliases, getRootDir } from '../config';
+import { languageModel } from '../language/cache';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 
 const excludeFiles = ['.', '..'];
 
@@ -42,7 +44,13 @@ export function getAllFile(dir: string, extList?: string[]) {
 export function getFileStyleType(path: string) {
   const ext = extname(path).slice(1);
 
-  return EXT_MAP[ext] ?? StyleType.css;
+  if (ext !== 'vue') {
+    return EXT_MAP[ext] ?? StyleType.css;
+  }
+
+  const regions = languageModel.get(TextDocument.create(path, 'vue', 1, String(readFileSync(path))));
+
+  return regions.getLanguagesInDocument()[0];
 }
 
 export function getRealPath(path: string, base = getRootDir()) {
