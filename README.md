@@ -1,6 +1,8 @@
 <!-- omit in toc -->
 # Style all in one
 
+English | [中文文档](https://github.com/He110te4m/vscode-style-all-in-one/blob/main/README_zh-CN.md)
+
 <!-- omit in toc -->
 ## Table of contents
 - [Features](#features)

@@ -22,7 +22,7 @@ export function activate(context: ExtensionContext) {
     const checkFn = debounce(() => {
       const path = checkUpdate();
       if (path !== false) {
-        client.sendRequest('parser-color-map', {
+        client.sendRequest('parse-color-map', {
           path
         });
       }

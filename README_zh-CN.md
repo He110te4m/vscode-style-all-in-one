@@ -1,6 +1,8 @@
 <!-- omit in toc -->
 # Style all in one
 
+[English](https://github.com/He110te4m/vscode-style-all-in-one/blob/main/README.md) | 中文文档
+
 <!-- omit in toc -->
 ## 目录
 

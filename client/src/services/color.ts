@@ -76,7 +76,7 @@ function updateColor({ uri, colorMap }: ShowColorBlockParams) {
         });
     }
 
-    activeTextEditor.setDecorations(textEditorDecorationType, opts);
+    activeTextEditor?.setDecorations(textEditorDecorationType, opts);
 }
 
 function generateColorBlock(color: string) {
