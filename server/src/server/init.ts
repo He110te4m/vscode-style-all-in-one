@@ -24,6 +24,8 @@ import { getColorMap } from '../services/color';
 import { getCompleteList } from '../services/completion';
 import { getDefinition } from '../services/definition';
 
+let isHideCodeLens = true;
+
 export function initListener(
   conn: Connection,
   docs: TextDocuments<TextDocument>
@@ -98,6 +100,7 @@ function onInitialize(params: InitializeParams): InitializeResult {
 async function updateGlobalInfo(conn: Connection) {
   const config = await conn.workspace.getConfiguration('style-all-in-one');
   setAliases(config?.['path-aliases'] ?? {});
+  isHideCodeLens = config?.['hide-variable-toggle-switch'] ?? false;
 
   const globalStyle = config?.['global-style'] ?? [];
   setGlobalStyle(globalStyle);
@@ -140,6 +143,10 @@ function onHover(docs: TextDocuments<TextDocument>) {
 
 function onCodeLens(docs: TextDocuments<TextDocument>) {
   return ({ textDocument }: CodeLensParams) => {
+    if (isHideCodeLens) {
+      return null;
+    }
+
     const doc = docs.get(textDocument.uri);
     if (!doc) {
       return null;

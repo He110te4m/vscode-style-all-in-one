@@ -1,72 +1,76 @@
 {
-    "name": "style-all-in-one",
-    "description": "",
-    "author": "He110",
-    "license": "MIT",
-    "version": "1.0.1",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/He110te4m/vscode-style-all-in-one"
-    },
-    "publisher": "he110te4m",
-    "categories": [],
-    "keywords": [],
-    "engines": {
-        "vscode": "^1.43.0"
-    },
-    "activationEvents": [
-        "*"
-    ],
-    "main": "./client/out/main",
-    "contributes": {
-        "configuration": {
-            "type": "object",
-            "properties": {
-                "style-all-in-one.global-style": {
-                    "type": "array",
-                    "default": [],
-                    "items": {
-                        "type": "string"
-                    },
-                    "description": "全局样式表"
-                },
-                "style-all-in-one.path-aliases": {
-                    "type": "object",
-                    "default": {
-                        "@": "src"
-                    },
-                    "description": "路径别名"
-                }
-            }
+  "name": "style-all-in-one",
+  "description": "",
+  "author": "He110",
+  "license": "MIT",
+  "version": "1.0.2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/He110te4m/vscode-style-all-in-one"
+  },
+  "publisher": "he110te4m",
+  "categories": [],
+  "keywords": [],
+  "engines": {
+    "vscode": "^1.43.0"
+  },
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./client/out/main",
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "properties": {
+        "style-all-in-one.global-style": {
+          "type": "array",
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "description": "全局样式表"
+        },
+        "style-all-in-one.path-aliases": {
+          "type": "object",
+          "default": {
+            "@": "src"
+          },
+          "description": "路径别名"
+        },
+        "style-all-in-one.hide-variable-toggle-switch": {
+          "type": "boolean",
+          "default": false,
+          "description": "隐藏 codeLens 中，变量与值互相转换的开关，默认不隐藏"
         }
-    },
-    "scripts": {
-        "css-color-checker": "^1.6.1",
-        "package": "yarn compile && vsce package && mv *.vsix release/",
-        "vscode:prepublish": "cd client && yarn && cd .. && npm run compile",
-        "compile": "tsc -b",
-        "watch": "tsc -b -w",
-        "clean": "yarn clean:dep && yarn clean:build",
-        "clean:dep": "rm -rf node_modules client/node_modules server/node_modules",
-        "clean:build": "rm -rf out client/out server/out",
-        "lint": "eslint ./client/src ./server/src --ext .ts,.tsx",
-        "postinstall": "cd client && yarn && cd ../server && yarn && cd .."
-    },
-    "devDependencies": {
-        "@types/lodash": "^4.14.175",
-        "@types/mocha": "^5.2.7",
-        "@types/node": "^12.12.0",
-        "@typescript-eslint/eslint-plugin": "^4.16.0",
-        "@typescript-eslint/parser": "^4.16.0",
-        "eslint": "^7.21.0",
-        "typescript": "^4.4.3"
-    },
-    "dependencies": {
-        "css-color-checker": "^1.6.1",
-        "less-symbols-parser": "^2.1.2",
-        "lodash": "^4.17.21",
-        "postcss": "^8.3.9",
-        "scss-symbols-parser": "^2.0.1",
-        "vscode-uri": "^3.0.2"
+      }
     }
+  },
+  "scripts": {
+    "package": "yarn compile && vsce package && mv *.vsix release/",
+    "vscode:prepublish": "cd client && yarn && cd .. && npm run compile",
+    "compile": "tsc -b",
+    "watch": "tsc -b -w",
+    "clean": "yarn clean:dep && yarn clean:build",
+    "clean:dep": "rm -rf node_modules client/node_modules server/node_modules",
+    "clean:build": "rm -rf out client/out server/out",
+    "lint": "eslint ./client/src ./server/src --ext .ts,.tsx",
+    "postinstall": "cd client && yarn && cd ../server && yarn && cd .."
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.175",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^12.12.0",
+    "@typescript-eslint/eslint-plugin": "^4.16.0",
+    "@typescript-eslint/parser": "^4.16.0",
+    "eslint": "^7.21.0",
+    "typescript": "^4.4.3"
+  },
+  "dependencies": {
+    "css-color-checker": "^1.6.1",
+    "less-symbols-parser": "^2.1.2",
+    "lodash": "^4.17.21",
+    "postcss": "^8.3.9",
+    "scss-symbols-parser": "^2.0.1",
+    "vscode-uri": "^3.0.2"
+  }
 }
