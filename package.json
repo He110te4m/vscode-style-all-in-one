@@ -3,7 +3,7 @@
   "description": "",
   "author": "He110",
   "license": "MIT",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/He110te4m/vscode-style-all-in-one"
@@ -36,6 +36,11 @@
             "@": "src"
           },
           "description": "路径别名"
+        },
+        "style-all-in-one.enable-variable-convert-to-value": {
+          "type": "boolean",
+          "default": false,
+          "description": "开启变量转为值的功能"
         },
         "style-all-in-one.hide-variable-toggle-switch": {
           "type": "boolean",

@@ -1,6 +1,6 @@
 import { IVariable } from 'less-symbols-parser';
 import { isEqual, isUndefined, uniqWith } from 'lodash';
-import { CodeLens, Position, Range } from 'vscode-languageserver';
+import { CodeLens, Range } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { URI } from 'vscode-uri';
 import { getGlobalSymbols } from '../config';
@@ -14,15 +14,21 @@ const commands = {
   convertToValue: 'style-all-in-one.convert-variable-to-value',
 } as const;
 
-export function getCodeLens(doc: TextDocument) {
+interface CodeLensOption {
+  isEnableVarToValue: boolean;
+}
+
+let codeLensOptions: CodeLensOption | undefined;
+
+export function getCodeLens(doc: TextDocument, options: CodeLensOption) {
   const docPath = URI.parse(doc.uri).fsPath ?? doc.uri;
   if (!docPath) {
     return null;
   }
 
-  const list: CodeLens[] = [];
+  codeLensOptions = options;
 
-  const pos = Position.create(0, 0);
+  let list: CodeLens[] = [];
 
   const id = doc.languageId.toLowerCase();
   if (id === 'vue') {
@@ -35,7 +41,7 @@ export function getCodeLens(doc: TextDocument) {
     types.forEach((type) => {
       const styleDoc = regions.getEmbeddedDocument(type);
 
-      list.push(...getCodeLensBySymbol(styleDoc, pos, globalSymbol));
+      list = getCodeLensBySymbol(styleDoc, globalSymbol);
     });
 
     return list;
@@ -48,7 +54,7 @@ export function getCodeLens(doc: TextDocument) {
       })
     );
 
-    list.push(...getCodeLensBySymbol(doc, pos, globalSymbol));
+    list = getCodeLensBySymbol(doc, globalSymbol);
 
     return list;
   }
@@ -56,11 +62,7 @@ export function getCodeLens(doc: TextDocument) {
   return null;
 }
 
-function getCodeLensBySymbol(
-  doc: TextDocument,
-  pos: Position,
-  globalSymbol: StyleSymbol[]
-) {
+function getCodeLensBySymbol(doc: TextDocument, globalSymbol: StyleSymbol[]) {
   const docPath = URI.parse(doc.uri).fsPath ?? doc.uri;
   if (!docPath) {
     return [];
@@ -101,6 +103,7 @@ function getVariableCodeLens(
   variable: IVariable,
   doc: TextDocument
 ) {
+  const { isEnableVarToValue } = codeLensOptions ?? {};
   const matches = content.matchAll(
     new RegExp(
       `${variable.name}(?![:\\-_])|(?<!${variable.name}:\\s*)(?<!\\w+)${variable.value}(?=[;\\s\\)])`,
@@ -118,6 +121,10 @@ function getVariableCodeLens(
     const { index } = match;
 
     const isValue = item === variable.value;
+    if (!isEnableVarToValue && !isValue) {
+      continue;
+    }
+
     const range = Range.create(
       doc.positionAt(index),
       doc.positionAt(
@@ -128,8 +135,7 @@ function getVariableCodeLens(
     list.push({
       range,
       command: {
-        title: `use style variable ( ${variable.name} ) ${isValue ? '☐' : '☑'
-          }`,
+        title: `use style variable ( ${variable.name} ) ${isValue ? '☐' : '☑'}`,
         command: isValue ? commands.convertToName : commands.convertToValue,
         arguments: [variable, range],
       },

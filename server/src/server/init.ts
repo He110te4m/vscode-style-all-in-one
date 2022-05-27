@@ -24,7 +24,8 @@ import { getColorMap } from '../services/color';
 import { getCompleteList } from '../services/completion';
 import { getDefinition } from '../services/definition';
 
-let isHideCodeLens = true;
+let isHideCodeLens = false;
+let isEnableVarToValue = false;
 
 export function initListener(
   conn: Connection,
@@ -67,11 +68,11 @@ function regHelperEvent(conn: Connection, docs: TextDocuments<TextDocument>) {
 }
 
 function regColorParserService(conn: Connection) {
-  conn.onRequest('parse-color-map', ({ path }: { path: string; }) => {
+  conn.onRequest('parse-color-map', ({ path }: { path: string }) => {
     const colorMap = getColorMap(path);
     conn.sendRequest('show-color-blocks', {
       uri: path,
-      colorMap
+      colorMap,
     });
   });
 }
@@ -101,6 +102,7 @@ async function updateGlobalInfo(conn: Connection) {
   const config = await conn.workspace.getConfiguration('style-all-in-one');
   setAliases(config?.['path-aliases'] ?? {});
   isHideCodeLens = config?.['hide-variable-toggle-switch'] ?? false;
+  isEnableVarToValue = config?.['enable-variable-convert-to-value'] ?? false;
 
   const globalStyle = config?.['global-style'] ?? [];
   setGlobalStyle(globalStyle);
@@ -152,6 +154,8 @@ function onCodeLens(docs: TextDocuments<TextDocument>) {
       return null;
     }
 
-    return getCodeLens(doc);
+    return getCodeLens(doc, {
+      isEnableVarToValue
+    });
   };
 }
